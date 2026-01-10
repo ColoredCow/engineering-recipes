@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+set -e
+
+BRANCH_NAME="chore/enable-claude-code-review"
+WORKFLOW_DIR=".github/workflows"
+WORKFLOW_FILE="$WORKFLOW_DIR/claude-code-review.yml"
+GUIDELINES_FILE="docs/code-review-guidelines.md"
+ENGINEERING_RECIPES_BASE_URL="https://raw.githubusercontent.com/ColoredCow/engineering-recipes/main"
+RECIPE_WORKFLOW_URL="$ENGINEERING_RECIPES_BASE_URL/automated-code-review/workflow.yml"
+TEMPLATE_GUIDELINES_URL="$ENGINEERING_RECIPES_BASE_URL/automated-code-review/templates/code-review-guidelines.md"
+
+
+echo "▶️  Setting up Claude-based automated code review"
+echo "-----------------------------------------------"
+
+# STEP 1 — Create setup branch
+if git show-ref --quiet refs/heads/"$BRANCH_NAME"; then
+  echo "ℹ️  Branch $BRANCH_NAME already exists, checking it out"
+  git checkout "$BRANCH_NAME"
+else
+  echo "➡️  Creating setup branch: $BRANCH_NAME"
+  git checkout -b "$BRANCH_NAME"
+fi
+
+
+# STEP 2 — Create workflow directory if missing
+if [ ! -d "$WORKFLOW_DIR" ]; then
+  echo "➡️  Creating $WORKFLOW_DIR directory"
+  mkdir -p "$WORKFLOW_DIR"
+else
+  echo "ℹ️  $WORKFLOW_DIR already exists"
+fi
+
+# STEP 3 — Pull the workflow recipe
+echo "➡️  Fetching Claude workflow from engineering-recipes"
+curl -fsSL "$RECIPE_WORKFLOW_URL" -o "$WORKFLOW_FILE"
+
+echo "✅ Workflow added at $WORKFLOW_FILE"
+
+# STEP 4 — Add review guidelines
+if [ ! -f "$GUIDELINES_FILE" ]; then
+  echo "➡️  Adding default code review guidelines"
+  mkdir -p "$(dirname "$GUIDELINES_FILE")"
+
+  curl -fsSL "$TEMPLATE_GUIDELINES_URL" -o "$GUIDELINES_FILE"
+
+  echo "✅ Guidelines added at $GUIDELINES_FILE"
+else
+  echo "ℹ️  Guidelines already exist, skipping"
+fi
+
+# STEP 5 — Commit changes
+echo "➡️  Committing changes (if any)"
+
+git add "$WORKFLOW_FILE" "$GUIDELINES_FILE"
+
+git commit --no-verify -m "chore: enable Claude-based automated code review" \
+  || echo "ℹ️  No changes to commit"
+
+# STEP 6 — Push branch
+echo "➡️  Pushing branch to origin"
+git push -u origin "$BRANCH_NAME"
+
+echo ""
+echo "🎉 Setup complete!"
+echo "Next steps:"
+echo "1. Open a Pull Request from '$BRANCH_NAME' to main"
+echo "2. Add ANTHROPIC_API_KEY as a GitHub Actions secret"
+echo "3. Add the 'Ready For Review' label to any PR to trigger review"
