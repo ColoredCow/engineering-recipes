@@ -7,7 +7,7 @@ on:
 jobs:
   code-review:
     # Run only when the exact label is applied
-    if: github.event.label.name == 'status: ready for review'
+    if: contains(github.event.label.name, 'ready for review')
 
     runs-on: ubuntu-latest
 
