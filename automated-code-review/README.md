@@ -19,6 +19,7 @@ Reviews are posted as **PR comments** when you explicitly ask for them.
 
 In your **project repository**, add the key as a repository secret so GitHub Actions can access it.
 
+
 **Steps:**
 1. Go to your repository on GitHub
 2. Navigate to:
@@ -33,6 +34,19 @@ In your **project repository**, add the key as a repository secret so GitHub Act
    ```
 
 Once this secret is added, the Claude review workflow can consume it automatically.
+
+### 3. Install the Claude Code GitHub App
+
+The automated review workflow relies on the **Claude Code GitHub App** to read pull requests and post review comments.
+
+* This app must be installed on the repository (or org-wide)
+* Installation is typically handled by **Infra Support**
+
+Install link:
+
+* [https://github.com/apps/claude](https://github.com/apps/claude)
+
+Without this app, the workflow will fail with a `401 Unauthorized` error.
 
 ---
 
