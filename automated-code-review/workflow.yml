@@ -1,70 +1,10 @@
-name: Automated Code Review
-
+name: Claude Code Review
 on:
   pull_request:
-    types: [labeled]
+    types: [opened, synchronize]
 
 jobs:
-  code-review:
-    # Run only when the exact label is applied
-    if: contains(github.event.label.name, 'ready for review')
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
-      actions: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Run automated code review
-        id: code-review
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-
-          # Allows the agent to read CI results on PRs
-          additional_permissions: |
-            actions: read
-
-          prompt: |
-            REPO: ${{ github.repository }}
-            PR NUMBER: ${{ github.event.pull_request.number }}
-
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
-
-            IMPORTANT:
-            - Read and follow ALL Markdown files under the folder:
-              docs/code-review/
-            - These documents define the review expectations and standards
-              specific to this repository.
-            - Do NOT use other project documentation unless explicitly referenced
-              inside docs/code-review/.
-
-            Be constructive and pragmatic. Suggest improvements, not rewrites.
-
-            Use `gh pr comment` with your Bash tool to post the review
-            as a comment on the pull request.
-
-          # Allowed GitHub CLI tools
-          claude_args: >
-            --allowed-tools
-            "Bash(gh issue view:*),
-             Bash(gh search:*),
-             Bash(gh issue list:*),
-             Bash(gh pr comment:*),
-             Bash(gh pr diff:*),
-             Bash(gh pr view:*),
-             Bash(gh pr list:*)"
+  review:
+    uses: ColoredCow/engineering-recipes/blob/main/.github/claude-code-review.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
