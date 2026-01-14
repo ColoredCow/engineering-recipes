@@ -5,6 +5,6 @@ on:
 
 jobs:
   review:
-    uses: ColoredCow/engineering-recipes/blob/main/.github/claude-code-review.yml@main
+    uses: ColoredCow/engineering-recipes/blob/main/.github/workflows/claude-code-review.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
