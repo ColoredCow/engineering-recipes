@@ -114,7 +114,10 @@ jobs:
         id: claude-review
         uses: anthropics/claude-code-action@v1.0.8
         with:
-          claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+          additional_permissions: |
+            actions: read
           
           # Use input parameters or defaults
           prompt: ${{ inputs.prompt }}
