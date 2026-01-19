@@ -1,16 +1,22 @@
 name: Claude Code Review
+
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [labeled]
 
 jobs:
   review:
+    # Run only when the exact label is applied
+    if: contains(github.event.label.name, 'ready for review')
+    
     permissions:
       actions: read
       contents: read
       issues: write
       pull-requests: write
       id-token: write
+    
     uses: ColoredCow/engineering-recipes/.github/workflows/claude-code-review.yml@main
+    
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
