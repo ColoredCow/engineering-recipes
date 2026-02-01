@@ -17,6 +17,9 @@ jobs:
       id-token: write
     
     uses: ColoredCow/engineering-recipes/.github/workflows/claude-code-review.yml@main
-    
+
+    with:
+      guidelines_dir: 'docs/code-review'
+
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
