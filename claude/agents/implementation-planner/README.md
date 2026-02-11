@@ -1,6 +1,6 @@
-# Implementation Planner Subagent
+# Implementation Planner Agent
 
-A Claude Code subagent that translates high-level feature requests into comprehensive implementation plans using the **4-hour task theory** — every task broken into chunks of max 4 hours with clear definitions of done.
+A Claude Code agent that translates high-level feature requests into comprehensive implementation plans using the **4-hour task theory** — every task broken into chunks of max 4 hours with clear definitions of done.
 
 ## What It Does
 
@@ -27,9 +27,9 @@ Open the copied file and replace each `{{PLACEHOLDER}}` with your project-specif
 Add the following to your project's `CLAUDE.md`:
 
 ```markdown
-## Custom Subagents
+## Custom Agents
 
-Custom subagents are defined in `.claude/agents/`. Use them via the Task tool with the matching `subagent_type`.
+Custom agents are defined in `.claude/agents/`. Use them via the Task tool with the matching `subagent_type`.
 
 | Agent | When to Use |
 |-------|-------------|

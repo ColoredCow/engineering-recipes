@@ -10,4 +10,4 @@ Individual projects opt into recipes by copying or referencing them.
 | Category | Recipe | Description |
 |----------|--------|-------------|
 | Automated Code Review | [automated-code-review/](automated-code-review/) | Automated code review patterns |
-| Subagents | [subagents/implementation-planner/](subagents/implementation-planner/) | Claude Code subagent that creates 4-hour task breakdown implementation plans from feature requirements and posts them to GitHub issues |
+| Claude Agents | [claude/agents/implementation-planner/](claude/agents/implementation-planner/) | Claude Code agent that creates 4-hour task breakdown implementation plans from feature requirements and posts them to GitHub issues |
