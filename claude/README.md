@@ -7,6 +7,7 @@ This directory contains reusable, templatized Claude Code agents that can be set
 | Agent | Description |
 |-------|-------------|
 | [implementation-planner](agents/implementation-planner/) | Translates feature requests into phased implementation plans using the 4-hour task theory and posts them as GitHub issue comments. |
+| [bug-investigator](agents/bug-investigator/) | Investigates bugs by clarifying symptoms, building reproduction profiles, isolating root causes in code, and proposing solution options with trade-offs. Posts investigation reports to GitHub issues for human review before the implementation-planner creates the fix plan. |
 
 ## Setting Up Agents in Your Project
 
