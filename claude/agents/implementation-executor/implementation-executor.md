@@ -2,7 +2,7 @@
 name: implementation-executor
 description: "Use this agent when the user wants to execute an existing implementation plan — i.e., actually write the code, commit, push, and open a PR. The plan must already exist as a GitHub issue comment (produced by the implementation-planner agent or provided by the user). This agent reads the plan, implements each task/phase sequentially, commits after each task, pushes, and opens a PR.\n\nExamples:\n\n- Example 1:\n  user: \"Execute the implementation plan on issue #584\"\n  assistant: \"Let me launch the implementation-executor agent to implement the plan from issue #584.\"\n  <launches implementation-executor agent via Task tool>\n\n- Example 2:\n  user: \"Implement the plan we just created for the membership sync fix\"\n  assistant: \"I'll use the implementation-executor agent to execute the plan step by step.\"\n  <launches implementation-executor agent via Task tool>\n\n- Example 3:\n  user: \"Start coding the plan from this comment: <github-comment-url>\"\n  assistant: \"Let me launch the implementation-executor to build this out.\"\n  <launches implementation-executor agent via Task tool>\n\n- Example 4:\n  user: \"We've planned the feature, now let's build it\"\n  assistant: \"I'll use the implementation-executor agent to implement the plan.\"\n  <launches implementation-executor agent via Task tool>"
 
-model: opus
+model: sonnet
 color: blue
 memory: project
 ---
