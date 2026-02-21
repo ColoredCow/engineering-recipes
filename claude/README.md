@@ -34,7 +34,15 @@ For each agent found there:
    a. First, explore this project's codebase — look at the directory structure, config files, package.json/requirements.txt, existing patterns, test setup, and conventions to infer as many placeholder values as possible.
    b. For any placeholder you cannot confidently determine from the codebase, ask me before proceeding. Present what you've inferred so far and ask only about the ones you're unsure of.
 4. If the agent template has optional sections that don't apply to this project (e.g., Multi-Repository Context for a single-repo project), remove them.
-5. Register all set-up agents in this project's CLAUDE.md under a "Custom Agents" section. Create CLAUDE.md if it doesn't exist.
+5. Register all set-up agents in this project's CLAUDE.md under a "Custom Agents" section. Create CLAUDE.md if it doesn't exist. Do NOT mention how to invoke them (no Task tool, no Skill tool, no slash commands) — Claude Code handles invocation automatically based on the agent's description frontmatter. Example format:
+   ```
+   ## Custom Agents
+   Custom agents are defined in `.claude/agents/`. They are automatically invoked based on your request.
+
+   | Agent | When to Use |
+   |-------|-------------|
+   | implementation-planner | When the user asks for an implementation plan, technical breakdown, or task planning for a feature or issue. |
+   ```
 
 After setup, show me a summary of what was configured and any values you'd recommend I review or adjust.
 ```
