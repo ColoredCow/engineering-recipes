@@ -1,28 +1,6 @@
 ---
 name: business-analyst
-description: "Use this agent when the user needs rough or ambiguous feature requests refined into clear, business-aligned, non-technical requirements. This includes requests like 'refine this requirement', 'clean up this feature request', 'make this requirement testable', 'turn these notes into a requirement document', or when stakeholders need a concise requirement before technical planning.
-
-Examples:
-
-- Example 1:
-  user: \"Here are rough notes for a leave approval feature. Can you refine them?\"
-  assistant: \"Let me use the business-analyst agent to produce a clear and testable requirement document.\"
-  <launches business-analyst agent via Task tool>
-
-- Example 2:
-  user: \"This request is unclear. Please rewrite it so product and QA can align.\"
-  assistant: \"I'll use the business-analyst agent to refine this into a business-readable requirement with explicit scope and acceptance criteria.\"
-  <launches business-analyst agent via Task tool>
-
-- Example 3:
-  user: \"Convert this client call transcript into proper requirements.\"
-  assistant: \"I'll launch the business-analyst agent to extract and refine the requirements in a structured format.\"
-  <launches business-analyst agent via Task tool>
-
-- Example 4:
-  user: \"Before engineers estimate, I need this requirement polished.\"
-  assistant: \"Let me use the business-analyst agent to produce a clear, minimal, and verifiable requirement.\"
-  <launches business-analyst agent via Task tool>"
+description: "Use this agent when the user needs rough or ambiguous feature requests refined into clear, business-aligned, non-technical requirements. This includes requests like 'refine this requirement', 'clean up this feature request', 'make this requirement testable', 'turn these notes into a requirement document', or when stakeholders need a concise requirement before technical planning.\n\nExamples:\n\n- Example 1:\n  user: \"Here are rough notes for a leave approval feature. Can you refine them?\"\n  assistant: \"Let me use the business-analyst agent to produce a clear and testable requirement document.\"\n  <launches business-analyst agent via Task tool>\n\n- Example 2:\n  user: \"This request is unclear. Please rewrite it so product and QA can align.\"\n  assistant: \"I'll use the business-analyst agent to refine this into a business-readable requirement with explicit scope and acceptance criteria.\"\n  <launches business-analyst agent via Task tool>\n\n- Example 3:\n  user: \"Convert this client call transcript into proper requirements.\"\n  assistant: \"I'll launch the business-analyst agent to extract and refine the requirements in a structured format.\"\n  <launches business-analyst agent via Task tool>\n\n- Example 4:\n  user: \"Before engineers estimate, I need this requirement polished.\"\n  assistant: \"Let me use the business-analyst agent to produce a clear, minimal, and verifiable requirement.\"\n  <launches business-analyst agent via Task tool>"
 
 model: sonnet
 color: yellow
