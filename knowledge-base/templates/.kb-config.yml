@@ -1,0 +1,55 @@
+version: 1
+source_of_truth: kb-config
+project:
+  name: "{{PROJECT_NAME}}"
+  summary: "{{PROJECT_SUMMARY}}"
+  domain: "{{PROJECT_DOMAIN}}"
+  repo_type: "{{REPO_TYPE}}"
+enabled_tier2:
+  # Add optional module keys here when enabled for the project.
+loading_defaults:
+  code_review:
+    - 02-architecture.md
+    - 03-risk-model.md
+  planning:
+    - 01-business-flows.md
+    - 02-architecture.md
+    - 04-active-sprint.md
+  sprint_work:
+    - 04-active-sprint.md
+  onboarding:
+    - 00-master.md
+    - 01-business-flows.md
+    - 02-architecture.md
+    - 03-risk-model.md
+    - 04-active-sprint.md
+  incident_response:
+    - 03-risk-model.md
+    # Add advanced/incident-log.md when incident-log is enabled.
+owners:
+  kb_process: "knowledge-base-owner"
+  business_flows: "product-owner"
+  architecture: "tech-lead"
+  risk_model: "qa-lead"
+  active_sprint: "engineering-lead"
+  decision_log: "tech-lead"
+  incident_log: "qa-lead"
+  feature_history: "product-owner"
+  integration_map: "tech-lead"
+  metrics: "engineering-manager"
+  known_constraints: "tech-lead"
+review:
+  tier1_days: 30
+  tier2_days: 90
+agent_policy:
+  allow_auto_writes: true
+  kb_writer_agent: knowledge-base-manager
+  consumers_read_only: true
+compatibility:
+  numbered_tree_entrypoint: knowledge-base/00-master.md
+  numbered_tree_files:
+    - knowledge-base/01-business-flows/00-index.md
+    - knowledge-base/02-architecture/00-index.md
+    - knowledge-base/03-risk-model/00-index.md
+    - knowledge-base/04-active-sprint/00-index.md
+  legacy_flat_entrypoint: knowledge-base/00-index.md
