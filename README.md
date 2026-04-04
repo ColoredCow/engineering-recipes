@@ -10,4 +10,5 @@ Individual projects opt into recipes by copying or referencing them.
 | Category | Recipe | Description |
 |----------|--------|-------------|
 | Automated Code Review | [automated-code-review/](automated-code-review/) | Automated code review patterns |
-| Claude Agents | [claude/agents/implementation-planner/](claude/agents/implementation-planner/) | Claude Code agent that creates 4-hour task breakdown implementation plans from feature requirements and posts them to GitHub issues |
+| Claude Agents | [claude/agents/implementation-planner/]
+| Claude Agents | [claude/agents/quality-analyst/](https://github.com/ColoredCow/engineering-recipes/blob/main/claude/agents/quality-analyst) | Claude Code agent that generates requirement-driven test plans covering manual, functional, performance, security, accessibility, usability, and reliability test cases. Supports selective generation via `--type` flag. |(claude/agents/implementation-planner/) | Claude Code agent that creates 4-hour task breakdown implementation plans from feature requirements and posts them to GitHub issues |
