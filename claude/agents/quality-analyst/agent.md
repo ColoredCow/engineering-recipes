@@ -207,7 +207,7 @@ At the end of the plan, add a **Skipped sections** note listing what was not gen
 #### FT-02 — Business rule validation 🔴 HIGH
 | Rule | Input | Expected outcome |
 |------|-------|-----------------|
-| <rule> | <value> | <r> |
+| <rule> | <value> | <result> |
 
 #### FT-03 — Data integrity 🔴 HIGH
 **Steps:**
@@ -376,16 +376,22 @@ For every error in Sections A and B:
 
 > Always append this block at the end of the plan.
 
-```
 ### Not generated in this run
 The following sections were not requested. To generate them, re-invoke with:
 
-  Use the quality-analyst-agent for <source> --type <value>
+```
+Use the quality-analyst-agent for <source> --type <value>
+```
 
 | Section | --type value |
 |---------|-------------|
-| <omitted section name> | <value> |
-```
+| A — Manual | `manual` |
+| B — Functional | `functional` |
+| C — Performance | `performance` |
+| D — Security | `security` |
+| E — Accessibility | `accessibility` |
+| F — Usability | `usability` |
+| G — Reliability / NFR | `reliability` |
 
 ---
 
