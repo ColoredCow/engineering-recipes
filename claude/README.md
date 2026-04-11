@@ -37,13 +37,9 @@ Skills are companion wrappers for the agents above. Each skill guarantees its ag
 ```
 I want to set up Claude Code agents and skills from the engineering-recipes repo into this project.
 
-Source repo: https://github.com/ColoredCow/engineering-recipes
+Source repo: https://github.com/ColoredCow/engineering-recipes (browse the `claude/agents/` directory for all available agents and their READMEs, and `claude/skills/` for all available skills).
 
-**Step 1 — Set up Agents**
-
-Browse the `claude/agents/` directory for all available agents and their READMEs.
-
-For each agent found there:
+For each agent in `claude/agents/`:
 
 1. Read the agent's template file and its README (which contains the placeholder reference and example values).
 2. Copy the agent template to `.claude/agents/<agent-name>.md` in this project.
@@ -52,45 +48,35 @@ For each agent found there:
    b. For any placeholder you cannot confidently determine from the codebase, ask me before proceeding. Present what you've inferred so far and ask only about the ones you're unsure of.
 4. If the agent template has optional sections that don't apply to this project (e.g., Multi-Repository Context for a single-repo project), remove them.
 
-**Step 2 — Set up Skills**
+For each skill in `claude/skills/`:
 
-Browse the `claude/skills/` directory for all available skills.
+5. Copy the entire skill directory to `.claude/skills/<skill-name>/` in this project (skills have no placeholders — copy as-is).
 
-For each skill found there:
+Then:
 
-1. Copy the entire skill directory to `.claude/skills/<skill-name>/` in this project (skills have no placeholders — copy as-is).
+6. Register all set-up agents and skills in this project's CLAUDE.md. Create CLAUDE.md if it doesn't exist. Do NOT mention how to manually invoke agents or skills — Claude Code handles invocation automatically based on their description frontmatter.
 
-**Step 3 — Register in CLAUDE.md**
+   For agents, add a "Custom Agents" section. Example format:
 
-Register all set-up agents and skills in this project's CLAUDE.md. Create CLAUDE.md if it doesn't exist.
+   ## Custom Agents
+   Custom agents are defined in `.claude/agents/`. They are automatically invoked based on your request.
 
-For agents, add a "Custom Agents" section:
-```markdown
-## Custom Agents
+   | Agent | When to Use |
+   |-------|-------------|
+   | `business-analyst` | When the user shares rough requirements and needs them refined into clear, business-readable, testable requirement docs without technical implementation details. |
+   | `implementation-planner` | When the user asks for an implementation plan, technical breakdown, or task planning for a feature or issue. |
+   | `implementation-executor` | When the user wants to execute an existing implementation plan — reads the plan from a GitHub issue, implements each task sequentially, commits, pushes, and opens a PR. |
 
-Custom agents are defined in `.claude/agents/`. They are automatically invoked based on your request.
+   For skills, add a "Custom Skills" section. Example format:
 
-| Agent | When to Use |
-|-------|-------------|
-| `business-analyst` | When the user shares rough requirements and needs them refined into clear, business-readable, testable requirement docs without technical implementation details. |
-| `implementation-planner` | When the user asks for an implementation plan, technical breakdown, or task planning for a feature or issue. |
-| `implementation-executor` | When the user wants to execute an existing implementation plan — reads the plan from a GitHub issue, implements each task sequentially, commits, pushes, and opens a PR. |
-```
+   ## Custom Skills
+   Custom skills are defined in `.claude/skills/`. They wrap agents to guarantee correct invocation and show live task progress.
 
-For skills, add a "Custom Skills" section:
-```markdown
-## Custom Skills
-
-Custom skills are defined in `.claude/skills/`. They wrap agents to guarantee correct invocation and show live task progress.
-
-| Skill | Purpose |
-|-------|---------|
-| `cc-business-analyst` | Triggers the business-analyst agent with task tracking |
-| `cc-implementation-planner` | Triggers the implementation-planner agent with task tracking |
-| `cc-implementation-executor` | Triggers the implementation-executor agent with task tracking |
-```
-
-Do NOT mention how to manually invoke agents or skills — Claude Code handles invocation automatically.
+   | Skill | Purpose |
+   |-------|---------|
+   | `cc-business-analyst` | Triggers the business-analyst agent with task tracking |
+   | `cc-implementation-planner` | Triggers the implementation-planner agent with task tracking |
+   | `cc-implementation-executor` | Triggers the implementation-executor agent with task tracking |
 
 After setup, show me a summary of what was configured and any values you'd recommend I review or adjust.
 ```
