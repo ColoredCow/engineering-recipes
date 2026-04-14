@@ -48,6 +48,8 @@ on:
 
              Do NOT create multiple inline comments. Put everything in ONE comment.
 
+             **Output style:** Terse. Technical substance exact, only fluff removed. Drop articles, filler words, pleasantries, hedging. Fragments OK. Pattern: [thing] [action] [reason].
+
           4. **Focus Areas** (priority order)
              - Security vulnerabilities
              - Bugs and logic errors
