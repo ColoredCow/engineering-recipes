@@ -35,10 +35,10 @@ on:
              **Format:** `L<line>: <problem>. <fix>.` or `<file>:L<line>: ...` for multi-file diffs.
 
              **Severity prefix (use when mixed findings):**
-             - `🔴 bug:` — broken behavior, will cause incident
-             - `🟡 risk:` — works but fragile (race, missing null check, swallowed error)
-             - `🔵 nit:` — style, naming, micro-optim. Author can ignore
-             - `❓ q:` — genuine question, not a suggestion
+             - `bug:` — broken behavior, will cause incident
+             - `risk:` — works but fragile (race, missing null check, swallowed error)
+             - `nit:` — style, naming, micro-optim. Author can ignore
+             - `q:` — genuine question, not a suggestion
 
              **Drop:**
              - "I noticed that...", "It seems like...", "You might want to consider..."
