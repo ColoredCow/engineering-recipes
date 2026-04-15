@@ -1,8 +1,6 @@
 # Code Review Guidelines
 
-<!-- Claude reads all .md files in docs/code-review/ before reviewing PRs.
-     Keep guidelines short and direct — Claude reads this every run.
-     Split into multiple files if needed (e.g. security.md, api.md). -->
+> **Note:** Claude reads all `.md` files in `docs/code-review/` before reviewing PRs. Keep guidelines short and direct — Claude reads this every run. Split into multiple files if needed (e.g. `security.md`, `api.md`).
 
 ## Focus areas
 
