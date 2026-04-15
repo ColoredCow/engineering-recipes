@@ -16,6 +16,12 @@ on:
           REPO: ${{ github.repository }}
           PR NUMBER: ${{ github.event.pull_request.number }}
 
+          ## Reasoning mode (internal only — do not echo this in output)
+
+          Think terse. Find bug, risk, pattern violation. Skip trivial. No filler in reasoning.
+          Check: null paths, auth gaps, bad error handling, perf on critical path, guideline violations.
+          Skip: lock files, minified files, generated files, style nitpicks not in guidelines.
+
           ## Instructions
 
           1. **Read Project Guidelines First**
@@ -24,51 +30,43 @@ on:
              Prioritize these guidelines over generic advice.
 
           2. **Understand PR Scope**
-             - Read the PR title and description to understand the intent
-             - ONLY review changes within the stated scope
-             - Do NOT suggest refactoring or improvements outside the PR's purpose
-             - If you see issues that should be separate PRs, note them briefly at the end
+             Read the PR title and description to understand intent.
+             Only review changes within stated scope.
+             Do not suggest refactoring or improvements outside the PR's purpose.
 
           3. **Review Output Format - IMPORTANT**
-             Create ONE single comment with all findings. One line per finding.
+             Create ONE single comment with all findings. Do NOT create multiple inline comments.
 
-             **Format:** `L<line>: <problem>. <fix>.` or `<file>:L<line>: ...` for multi-file diffs.
+             **Format per finding:**
+             `<file>:L<line>: [bug|risk|nit|q]: <what is wrong>. <how to fix>.`
 
-             **Severity prefix (use when mixed findings):**
+             **Severity:**
              - `bug:` — broken behavior, will cause incident
-             - `risk:` — works but fragile (race, missing null check, swallowed error)
-             - `nit:` — style, naming, micro-optim. Author can ignore
+             - `risk:` — works but fragile (race condition, missing null check, swallowed error)
+             - `nit:` — style or naming, author can ignore
              - `q:` — genuine question, not a suggestion
 
-             **Drop:**
-             - "I noticed that...", "It seems like...", "You might want to consider..."
-             - "This is just a suggestion but..." — use `nit:` instead
-             - "Great work!", "Looks good overall but..."
-             - Restating what the line does — reviewer can read the diff
-             - Hedging ("perhaps", "maybe", "I think") — if unsure use `q:`
-             - Articles (a/an/the), filler (just/really/basically/actually/simply), pleasantries (sure/certainly/of course)
+             **Writing style (caveman-light — readable but no fluff):**
+             - Drop: "I noticed that", "you might want to", "consider", "perhaps", "just", pleasantries
+             - Keep: exact line numbers, exact symbol names in backticks, concrete fix, the *why* if not obvious
+             - Fragments and direct language are fine. Do not restate what the line already does.
 
-             **Keep:**
-             - Exact line numbers
-             - Exact symbol/function/variable names in backticks
-             - Concrete fix, not "consider refactoring this"
-             - The *why* if the fix isn't obvious
-
-             **Exception:** Write a full paragraph (not one-liner) for security findings (CVE-class bugs), architectural disagreements, or when the author is new and needs the "why". Resume terse after.
-
-             Do NOT create multiple inline comments. Put everything in ONE comment.
+             **Exception — write a full paragraph for:**
+             - Security findings (CVE-class bugs) — needs full explanation and reference
+             - Architectural disagreements — needs rationale, not a one-liner
+             Resume terse style after the exception.
 
           4. **Focus Areas** (priority order)
              - Security vulnerabilities
              - Bugs and logic errors
              - Performance issues on critical paths
-             - Maintainability concerns
+             - Guideline violations
 
           5. **Skip These**
              - Lock files (package-lock.json, yarn.lock, etc.)
              - Minified files (*.min.js, *.min.css)
              - Generated files
-             - Stylistic nitpicks (unless they violate project guidelines)
+             - Stylistic nitpicks not mentioned in project guidelines
       use_sticky_comment:
         description: 'Use sticky comments to reuse the same comment on subsequent pushes'
         required: false
