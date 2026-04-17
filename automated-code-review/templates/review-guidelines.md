@@ -1,24 +1,28 @@
 # Code Review Guidelines
 
-> **Note:** Claude reads all `.md` files in `docs/code-review/` before reviewing PRs. Keep guidelines short and direct — Claude reads this every run. Split into multiple files if needed (e.g. `security.md`, `api.md`).
+> **Note:** Claude reads all `.md` files in `docs/code-review/` before reviewing PRs. You can split guidelines into multiple files (e.g., `security.md`, `style.md`, `api.md`).
+
+These guidelines are used by Claude to align feedback with project expectations.
 
 ## Focus areas
 
-- Auth gaps and PII handling
-- Null paths and missing error handling
-- Performance on critical user flows
-- DB query efficiency
+- Readability and maintainability
+- Avoiding unnecessary complexity
+- Performance impact on critical user flows
+- Database query efficiency
+- Security implications (auth, payments, PII)
 
-## Rules
+## Review tone
 
-- Flag bugs and risks. Skip stylistic nitpicks unless they affect clarity or safety.
-- Do not suggest changes outside the PR's stated scope.
+- Be constructive
+- Prefer suggestions over rewrites
+- Call out risks clearly
+- Avoid stylistic nitpicking unless it affects clarity or safety
 
-## Project-specific rules
+## Project-specific rules (customize these)
 
-<!-- Add project rules below. Keep each rule one line. Examples:
-- All API endpoints must have auth middleware
-- No `any` types in TypeScript
-- DB migrations must be reversible
-- New user-facing features require a feature flag
--->
+<!-- Add your project-specific rules below. Examples: -->
+<!-- - All API endpoints must have authentication middleware -->
+<!-- - Use TypeScript strict mode - no `any` types -->
+<!-- - Database migrations must be reversible -->
+<!-- - Feature flags required for new user-facing features -->
