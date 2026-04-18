@@ -129,8 +129,47 @@ jobs:
           sanitized_tools="${sanitized_tools//\`/\\\`}"
           echo "allowed_tools=${sanitized_tools}" >> $GITHUB_OUTPUT
 
+      - name: Check review run limit
+        id: run-limit
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          if [ -z "$PR_NUMBER" ]; then
+            echo "skip=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          BYPASS=$(gh pr view "$PR_NUMBER" --json labels \
+            --jq '[.labels[].name] | contains(["claude-review-bypass"])')
+
+          if [ "$BYPASS" = "true" ]; then
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "Bypass label present. Skipping run limit."
+            exit 0
+          fi
+
+          COUNT=$(gh pr view "$PR_NUMBER" --json labels \
+            --jq '[.labels[].name | select(startswith("claude-review-run-"))] | length')
+
+          echo "Review runs so far: $COUNT"
+
+          if [ "$COUNT" -ge 2 ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Max review limit (2) reached for PR #$PR_NUMBER. Skipping."
+          else
+            NEXT=$((COUNT + 1))
+            gh label create "claude-review-run-$NEXT" --color "d4c5f9" \
+              --description "Claude Code Review run $NEXT" --force 2>/dev/null || true
+            gh pr edit "$PR_NUMBER" --add-label "claude-review-run-$NEXT"
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "Starting review run $NEXT for PR #$PR_NUMBER."
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Run Claude Code Review
         id: claude-review
+        if: steps.run-limit.outputs.skip != 'true'
         uses: anthropics/claude-code-action@v1.0.8
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
