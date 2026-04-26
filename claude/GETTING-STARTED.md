@@ -1,6 +1,24 @@
 # Getting Started with AI at ColoredCow
 
-Welcome to how we use AI as a team. This document covers everything you need to get started — read it top to bottom before your first session.
+ColoredCow is on a deliberate path to becoming an **AI-native organization** — not "a company that uses AI tools," but a team where AI is woven into how we think, plan, build, ship, and review. This guide is your starting kit. Treat it as ammunition: the more fluent you are with these tools, the more leverage you have on every project you touch.
+
+Read it top to bottom before your first session. Then come back and contribute what you learn.
+
+---
+
+## Why this matters
+
+We're not optimizing for "using AI sometimes." The bar is higher: every engineer at ColoredCow should be able to plan, code, debug, review, and ship faster *because* AI is part of the workflow, not in spite of it. Three things follow from that:
+
+- **It's a skill, not a shortcut.** The engineers who go furthest are the ones who learn to prompt precisely, give Claude the right context, and know when *not* to use it.
+- **Tool fluency compounds.** A small advantage in how you use Claude today turns into a large advantage on every feature, every PR, every incident.
+- **What we build here, the team uses everywhere.** Agents, skills, prompt patterns — if it worked for your project, ship it back into [engineering-recipes](https://github.com/ColoredCow/engineering-recipes). That's how we move from "individuals using AI" to "an AI-native team."
+
+> **What good looks like — the high-leverage AI-native engineer:**
+> - Writes context-rich prompts (role, constraints, format) instead of one-line questions.
+> - Picks the right model for the task — and knows when *not* to use AI at all.
+> - Saves what works back into the repo as agents, skills, or prompt patterns.
+> - Treats every API trigger as money spent — uses the tool deliberately, not casually.
 
 ---
 
@@ -73,7 +91,7 @@ Then inside the Claude Code session:
 
 ### Step 4 — Set up the ColoredCow agents and skills
 
-We maintain three production agents — Business Analyst, Implementation Planner, Implementation Executor — in the [engineering-recipes repo](https://github.com/ColoredCow/engineering-recipes) under the `/claude/` folder. Each agent ships with a companion **skill** (`cc-business-analyst`, `cc-implementation-planner`, `cc-implementation-executor`) that guarantees the agent is invoked correctly and shows live progress in the terminal. Install agents and skills together.
+Three production agents live in the [engineering-recipes repo](https://github.com/ColoredCow/engineering-recipes) under the `/claude/` folder — Business Analyst, Implementation Planner, Implementation Executor. Each agent ships with a companion **skill** (`cc-business-analyst`, `cc-implementation-planner`, `cc-implementation-executor`) that guarantees the agent is invoked correctly and shows live progress in the terminal. Install agents and skills together.
 
 **To add them to your project:**
 
@@ -121,18 +139,18 @@ Plan: [paste approved plan here]
 
 ---
 
-## 3. Contribute back
+## 3. Contribute back — this is the loop
 
-If you build a new agent, find a useful prompt pattern, or identify a gap — add it to the engineering recipes repo.
+Becoming AI-native is not something the company does *to* you — it's something you do, and then ship back. When you build a new agent, find a prompt pattern that consistently works, or identify a gap, get it into the engineering recipes repo. That's the loop that turns "individuals using AI" into "an AI-native team."
 
-**Areas with no agents yet:** SEO, DevOps, Playwright/Cypress, QA automation patterns, performance auditing.
+**Areas with no agents yet (open invitations):** SEO, DevOps, Playwright/Cypress, QA automation patterns, performance auditing.
 
 To contribute:
 - Make your agent generic (project-specific context goes in placeholders, not hardcoded)
 - Open a PR in [ColoredCow/engineering-recipes](https://github.com/ColoredCow/engineering-recipes)
 - Tag it with `agent` or `skill` accordingly
 
-The repo grows because people contribute back. If it worked for you, it will work for someone else.
+The repo grows because we feed it. When it works for you, ship it back — the next engineer shouldn't have to rediscover what you already figured out.
 
 ---
 
@@ -147,6 +165,8 @@ The repo grows because people contribute back. If it worked for you, it will wor
 ![Claude Code Usage Tracking](images/claude-code-usage-tracking.png)
 
 ### Which model to use
+
+Choosing the right model is itself a skill — pick deliberately, not by default. Bigger isn't better; the right model is the smallest one that handles the task well.
 
 | Use case | Model |
 |---|---|
@@ -168,7 +188,7 @@ The repo grows because people contribute back. If it worked for you, it will wor
 
 ## 5. Ask ColoredCow
 
-We have a custom Google Chat integration that lets you query your project's Google Chat history directly from Claude.
+ColoredCow ships a custom Google Chat integration that lets you query your project's Google Chat history directly from Claude — useful when you need to recover context from past discussions without scrolling through threads.
 
 ### Connecting it
 
@@ -181,7 +201,7 @@ We have a custom Google Chat integration that lets you query your project's Goog
 
 ### Using it
 
-Once connected, you can ask things like:
+Once connected, ask things like:
 
 - *"Summarise all activity in the Sneha LMS Google Chat space from the last week"*
 - *"What deployments were discussed in the past month on this project?"*
@@ -189,9 +209,9 @@ Once connected, you can ask things like:
 
 ---
 
-## 6. Two different Claude accounts — important
+## 6. Two accounts, two cost models
 
-We have **two separate Claude setups** and they are billed differently:
+ColoredCow runs **two separate Claude setups** and they're billed differently. Knowing which is which is part of using AI responsibly here.
 
 | | Team account | Code review API |
 |---|---|---|
@@ -200,7 +220,7 @@ We have **two separate Claude setups** and they are billed differently:
 | What it's for | Your daily use, sub-agents, Claude Code | Automated PR code reviews |
 | How to access | Sign in at claude.ai | Triggered by the `ready for review` label on a PR |
 
-**The code review API costs money per call.** Only add the `ready for review` label when your PR is actually ready. Don't use it for early drafts or WIP reviews.
+**Use the code review tool responsibly.** Every trigger of the `ready for review` label calls the Anthropic API and adds to ColoredCow's bill. We're at a stage where cost discipline matters — the goal is to use AI more, not waste it. Trigger reviews when a PR is genuinely ready: tested, self-reviewed, and worth a senior pair of eyes. Skip it for drafts, WIP, or trivial changes you can review yourself.
 
 ![GitHub PR showing the ready for review label](images/github-pr-ready-for-review-label.png)
 
@@ -208,17 +228,13 @@ We have **two separate Claude setups** and they are billed differently:
 
 ## 7. Keep exploring other tools
 
-Claude is our primary AI tool but it shouldn't be your only one. A few reasons:
-
-- Limits get hit — if Claude is unavailable, you shouldn't be stuck
-- Other tools are better at specific things — Codex for execution, etc
-- The goal is to grow your ability to use AI effectively — not to use one tool the same way forever
+Claude is primary. Other tools have edges — Codex on execution, Cursor on inline editing, others on niches we haven't mapped yet. Strategic curiosity is part of the job: an AI-native engineer doesn't pledge loyalty to one vendor, they run tools in parallel and develop taste.
 
 The team currently uses:
 - **Claude** — planning, agents, complex reasoning
 - **Codex** — execution and implementation (saves Claude credits)
 
-Try them. See where each one performs better. Bring what you learn back to the team.
+Run them in parallel on real work. Notice where each one wins. Bring what you learn back to the team — that's how the playbook stays sharp.
 
 ---
 
