@@ -50,34 +50,40 @@ claude --version
 
 ### Step 2 — Authenticate
 
-Run `claude` in your terminal. On first launch it opens your browser — log in with your work Anthropic account and authorise. The session token is stored locally so you only do this once.
+Run `claude` in your terminal. On first launch it opens your browser — log in with your ColoredCow Google account (same one you use for [claude.ai](https://claude.ai)) and authorise. The session token is stored locally so you only do this once.
 
 
 ### Step 3 — Initialise Claude in your project
 
-Navigate to your project folder and run:
+Navigate to your project folder, start Claude, and run the `/init` slash command:
 
 ```bash
 cd your-project
-claude init
+claude
 ```
 
-`claude init` reads your entire project structure and creates a `CLAUDE.md` file. This is the most important file — Claude reads it first on every session to understand your project context.
+Then inside the Claude Code session:
+
+```
+/init
+```
+
+`/init` reads your entire project structure and creates a `CLAUDE.md` file. This is the most important file — Claude reads it first on every session to understand your project context.
 
 
-### Step 4 — Set up the ColoredCow agents
+### Step 4 — Set up the ColoredCow agents and skills
 
-We maintain three finalized agents in the [engineering-recipes repo](https://github.com/ColoredCow/engineering-recipes) under the `/claude/` folder.
+We maintain three production agents — Business Analyst, Implementation Planner, Implementation Executor — in the [engineering-recipes repo](https://github.com/ColoredCow/engineering-recipes) under the `/claude/` folder. Each agent ships with a companion **skill** (`cc-business-analyst`, `cc-implementation-planner`, `cc-implementation-executor`) that guarantees the agent is invoked correctly and shows live progress in the terminal. Install agents and skills together.
 
 **To add them to your project:**
 
-1. Go to [`coloredcow/engineering-recipes`](https://github.com/ColoredCow/engineering-recipes) → `/claude/`
-2. Copy the setup prompt from there
-3. Paste it into your Claude Code session — it replaces the placeholders with your project's context and creates all three agents automatically
+1. Open [`claude/README.md`](https://github.com/ColoredCow/engineering-recipes/blob/main/claude/README.md) — single source of truth for the setup prompt
+2. Copy the setup prompt from the **Prompt** section
+3. Paste it into your Claude Code session — it replaces placeholders with your project's context and creates all three agents and their companion skills automatically
 
 ![Engineering recipes repo /claude/ folder](images/engineering-recipes-claude-folder.png)
 
-Once done, type `/agent` in Claude Code to see the three agents listed under your project.
+Once done, type `/agents` in Claude Code to see the three agents listed under your project.
 
 ![Claude Code showing Business Analyst, Implementation Planner, Implementation Executor listed](images/claude-code-agents-list.png)
 
@@ -93,7 +99,7 @@ Issue: https://github.com/your-org/your-project/issues/123
 Don't assume anything. Post all open questions first.
 ```
 
-**Implementation Planner** *(uses Opus)*
+**Implementation Planner** *(recommended: Opus)*
 Takes a refined requirement and produces a full technical plan — frontend/backend file-level changes, DB impact, task breakdown using the 4-hour theory, and a testing strategy. Review the plan before handing it to the executor.
 
 ```
@@ -102,7 +108,7 @@ Use the implementation-planner agent.
 Requirement: [paste refined requirement here]
 ```
 
-**Implementation Executor** *(uses Sonnet)*
+**Implementation Executor** *(recommended: Sonnet)*
 Takes an approved implementation plan and executes it — creates a checklist, syncs the branch, implements changes file by file, and pushes. Only use this after the plan has been reviewed.
 
 ```
@@ -123,7 +129,7 @@ If you build a new agent, find a useful prompt pattern, or identify a gap — ad
 
 To contribute:
 - Make your agent generic (project-specific context goes in placeholders, not hardcoded)
-- Open a PR in [coloredcow/engineering-recipes](https://github.com/coloredcow/engineering-recipes)
+- Open a PR in [ColoredCow/engineering-recipes](https://github.com/ColoredCow/engineering-recipes)
 - Tag it with `agent` or `skill` accordingly
 
 The repo grows because people contribute back. If it worked for you, it will work for someone else.
@@ -142,11 +148,11 @@ The repo grows because people contribute back. If it worked for you, it will wor
 
 ### Which model to use
 
-| Task | Model |
+| Use case | Model |
 |---|---|
 | Planning, research, complex reasoning | **Opus** |
 | Coding, execution, implementation | **Sonnet** |
-| Quick lookups, tool comparisons, internet search | **Haiku** |
+| Quick lookups, simple Q&A, fast iteration | **Haiku** |
 
 **Extended thinking** is available on all models. Enable it when normal prompting isn't giving you a clean solution — it gives Claude extra time to reason before responding.
 
@@ -162,7 +168,7 @@ The repo grows because people contribute back. If it worked for you, it will wor
 
 ## 5. Ask ColoredCow
 
-We have a custom Google Chat integration that lets you query your project's Slack/Chat history directly from Claude.
+We have a custom Google Chat integration that lets you query your project's Google Chat history directly from Claude.
 
 ### Connecting it
 
@@ -177,8 +183,8 @@ We have a custom Google Chat integration that lets you query your project's Slac
 
 Once connected, you can ask things like:
 
-- *"Summarise all activity in the Sneha LMS channel from the last week"*
-- *"What deployments happened in the past month on this project?"*
+- *"Summarise all activity in the Sneha LMS Google Chat space from the last week"*
+- *"What deployments were discussed in the past month on this project?"*
 - *"Find the discussion we had about CI/CD workflow in March"*
 
 ---
@@ -216,6 +222,4 @@ Try them. See where each one performs better. Bring what you learn back to the t
 
 ---
 
-
-
-*To update this doc — open a PR in [coloredcow/engineering-recipes](https://github.com/coloredcow/engineering-recipes). Don't let it go stale.*
+*To update this doc — open a PR in [ColoredCow/engineering-recipes](https://github.com/ColoredCow/engineering-recipes). Don't let it go stale.*
