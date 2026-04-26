@@ -14,8 +14,13 @@ We're not optimizing for "using AI sometimes." The bar is higher: every engineer
 - **Tool fluency compounds.** A small advantage in how you use Claude today turns into a large advantage on every feature, every PR, every incident.
 - **What we build here, the team uses everywhere.** Agents, skills, prompt patterns — if it worked for your project, ship it back into [engineering-recipes](https://github.com/ColoredCow/engineering-recipes). That's how we move from "individuals using AI" to "an AI-native team."
 
+And one more shift, maybe the most important:
+
+- **AI is a thinking partner, not just a typing assistant.** Most of the industry uses AI to type faster — generate code, fill boilerplate, ship the obvious. We want to go further. Use Claude *before* the code: to pressure-test a design, sharpen a vague requirement, surface edge cases you'd miss, weigh trade-offs out loud. The biggest wins aren't in the lines of code AI writes — they're in the bad ideas it helps you catch before you write them.
+
 > **What good looks like — the high-leverage AI-native engineer:**
 > - Writes context-rich prompts (role, constraints, format) instead of one-line questions.
+> - Uses Claude as a thinking partner, not just a typing assistant — pressure-tests designs, surfaces blind spots, argues trade-offs *before* writing code.
 > - Picks the right model for the task — and knows when *not* to use AI at all.
 > - Saves what works back into the repo as agents, skills, or prompt patterns.
 > - Treats every API trigger as money spent — uses the tool deliberately, not casually.
