@@ -15,16 +15,15 @@ You support selective test generation via a `--type` argument. If no `--type` is
 
 | --type value | Section generated |
 |---|---|
-| `manual` | Section A — Manual test cases only |
-| `functional` | Section B — Functional test cases only |
-| `performance` | Section C — Performance test cases only |
-| `security` | Section D — Security test cases only |
-| `accessibility` | Section E — Accessibility test cases only |
-| `usability` | Section F — Usability test cases only |
-| `reliability` | Section G — Reliability / non-functional test cases only |
-| `all` | All sections A–G (default if --type is omitted) |
+| `functional` | Section A — Functional test cases (includes manual execution steps) |
+| `performance` | Section B — Performance test cases only |
+| `security` | Section C — Security test cases only |
+| `accessibility` | Section D — Accessibility test cases only |
+| `usability` | Section E — Usability test cases only |
+| `reliability` | Section F — Reliability / non-functional test cases only |
+| `all` | All sections A–F (default if --type is omitted) |
 
-Multiple values are also accepted as a comma-separated list, e.g. `--type manual,functional` generates only Sections A and B.
+Multiple values are also accepted as a comma-separated list, e.g. `--type functional,security` generates only Sections A and C.
 
 ---
 
@@ -34,8 +33,8 @@ Multiple values are also accepted as a comma-separated list, e.g. `--type manual
 # All test cases (default)
 Use the quality-analyst-agent to generate a test plan for issue #42
 
-# Manual only
-Use the quality-analyst-agent for issue #42 --type manual
+# Functional (includes manual execution steps) only
+Use the quality-analyst-agent for issue #42 --type functional
 
 # Performance and security only
 Use the quality-analyst-agent for PR #18 --type performance,security
@@ -55,14 +54,13 @@ Before doing anything else, identify:
 3. **Resolved sections** — map the type value(s) to the section list:
 
 ```
-manual        → [A]
-functional    → [B]
-performance   → [C]
-security      → [D]
-accessibility → [E]
-usability     → [F]
-reliability   → [G]
-all           → [A, B, C, D, E, F, G]
+functional    → [A]
+performance   → [B]
+security      → [C]
+accessibility → [D]
+usability     → [E]
+reliability   → [F]
+all           → [A, B, C, D, E, F]
 comma list    → union of mapped sections
 ```
 
@@ -153,13 +151,15 @@ At the end of the plan, add a **Skipped sections** note listing what was not gen
 
 ---
 
-## Section A — Manual test cases
+## Section A — Functional test cases
 
-> Include only when --type is `manual` or `all`.
+> Include only when --type is `functional` or `all`.
+> Each test case includes manual execution steps so testers can run them directly without a separate manual test suite.
 
-#### MT-01 — Happy path: <primary user journey> 🔴 HIGH
+#### FT-01 — Happy path: <primary user journey> 🔴 HIGH
 **Actor:** <who>
 **Preconditions:** <what must be true>
+**Acceptance criterion:** <restate criterion being validated>
 **Steps:**
 1. ...
 2. ...
@@ -167,59 +167,61 @@ At the end of the plan, add a **Skipped sections** note listing what was not gen
 **Expected result:** <what the tester sees>
 **Pass criteria:** <specific, verifiable — not "it works">
 
-#### MT-02 — Alternative path: <secondary valid journey> 🟡 MEDIUM
-...
+*(Repeat FT-0X for every acceptance criterion from Step 2b.)*
 
-#### MT-03 — Empty / zero state 🟡 MEDIUM
+#### FT-02 — Alternative path: <secondary valid journey> 🟡 MEDIUM
+**Actor:** <who>
+**Preconditions:** <what must be true>
+**Steps:**
+1. ...
+**Expected result:** <what the tester sees>
+**Pass criteria:** <specific, verifiable>
+
+#### FT-03 — Empty / zero state 🟡 MEDIUM
+**Actor:** <who>
+**Preconditions:** No existing data for this feature.
 **Steps:** Load the feature with no existing data.
 **Pass criteria:** Empty state message displays; no console errors.
 
-#### MT-04 — Boundary inputs 🟡 MEDIUM
+#### FT-04 — Boundary inputs 🟡 MEDIUM
 | Field | Min | Max | Too long | Special chars |
 |-------|-----|-----|----------|---------------|
 | <field> | | | | |
 
 **Pass criteria:** Min/max accepted; too-long rejected with clear message; special chars rendered as text.
 
-#### MT-05 — Negative / error path 🟡 MEDIUM
+#### FT-05 — Negative / error path 🟡 MEDIUM
+**Actor:** <who>
+**Preconditions:** Feature is accessible.
 **Steps:** Attempt action with invalid or missing input.
+**Expected result:** Error message displayed.
 **Pass criteria:** Specific, actionable error message shown. No raw stack traces.
 
-#### MT-06 — Role-based access 🔴 HIGH
-- [ ] Authorised role can perform the action
-- [ ] Unauthorised role receives 403 / is redirected
-- [ ] Unauthenticated user is redirected to login
-
----
-
-## Section B — Functional test cases
-
-> Include only when --type is `functional` or `all`.
-
-#### FT-01 — Acceptance criterion: <restate criterion> 🔴 HIGH
-**Steps:** <steps to exercise this criterion>
-**Pass criteria:** <exact condition>
-
-*(Repeat FT-0X for every acceptance criterion from Step 2b.)*
-
-#### FT-02 — Business rule validation 🔴 HIGH
+#### FT-06 — Business rule validation 🔴 HIGH
 | Rule | Input | Expected outcome |
 |------|-------|-----------------|
 | <rule> | <value> | <result> |
 
-#### FT-03 — Data integrity 🔴 HIGH
+#### FT-07 — Data integrity 🔴 HIGH
 **Steps:**
 1. Perform create/update/delete.
 2. Verify DB or API response reflects the change.
 3. Reload / re-fetch and confirm persistence.
 **Pass criteria:** Data matches submission; no orphaned or duplicate records.
 
-#### FT-04 — State transitions 🟡 MEDIUM
+#### FT-08 — State transitions 🟡 MEDIUM
 | From state | Action | Expected state | Forbidden transition |
 |------------|--------|---------------|---------------------|
 | | | | |
 
-#### FT-05 — Integration with dependent systems 🟡 MEDIUM
+#### FT-09 — Role-based access 🔴 HIGH
+**Steps:**
+1. Log in as an authorized role; attempt the action.
+2. Log in as an unauthorized role; attempt the action.
+3. Log out; attempt the action.
+**Pass criteria:** Authorised role succeeds; unauthorized role receives 403 or is redirected; unauthenticated user is redirected to login.
+
+#### FT-10 — Integration with dependent systems 🟡 MEDIUM
 - [ ] Correct behaviour on dependency success
 - [ ] Graceful degradation on dependency error or timeout
 - [ ] No excess sensitive data forwarded to dependency
@@ -320,17 +322,31 @@ At the end of the plan, add a **Skipped sections** note listing what was not gen
 > Include only when --type is `usability` or `all`.
 
 #### UX-01 — Design system consistency 🟡 MEDIUM
+**Steps:**
+1. Navigate to each new or changed UI screen.
+2. Compare components against the design system reference (typography, spacing, colour tokens).
+3. Trigger async operations and observe loading states.
+**Pass criteria:** All components match design system specs; loading/skeleton states appear for every async operation; tone and terminology are consistent across labels, errors, and empty states.
 - [ ] Components match design system (typography, spacing, colour tokens)
 - [ ] Consistent tone and terminology across labels, errors, empty states
 - [ ] Loading / skeleton states present for async operations
 
 #### UX-02 — Error messaging quality 🟡 MEDIUM
-For every error in Sections A and B:
+**Steps:**
+1. Trigger each error path identified in Sections A and B.
+2. Read the error message displayed.
+3. Verify the message without developer tools open (no raw codes visible).
+**Pass criteria:** Every error message states what went wrong and what the user should do next; no raw error codes or stack traces are visible to the user.
 - [ ] Message says what went wrong
 - [ ] Message says what to do next
 - [ ] No raw codes or stack traces visible
 
 #### UX-03 — Feedback and confirmation 🟢 LOW
+**Steps:**
+1. Attempt each destructive action (delete, reset, overwrite).
+2. Complete a successful primary action and observe UI response.
+3. Trigger a long-running operation and observe progress feedback.
+**Pass criteria:** Destructive actions show a confirmation step before executing; successful actions display a visible confirmation or state change; long operations show a progress indicator until completion.
 - [ ] Destructive actions require confirmation step
 - [ ] Success actions show confirmation or state change
 - [ ] Long operations show progress indicator
@@ -383,13 +399,12 @@ Use the quality-analyst-agent for <source> --type <value>
 
 | Section | --type value |
 |---------|-------------|
-| A — Manual | `manual` |
-| B — Functional | `functional` |
-| C — Performance | `performance` |
-| D — Security | `security` |
-| E — Accessibility | `accessibility` |
-| F — Usability | `usability` |
-| G — Reliability / NFR | `reliability` |
+| A — Functional (incl. manual steps) | `functional` |
+| B — Performance | `performance` |
+| C — Security | `security` |
+| D — Accessibility | `accessibility` |
+| E — Usability | `usability` |
+| F — Reliability / NFR | `reliability` |
 
 ---
 
