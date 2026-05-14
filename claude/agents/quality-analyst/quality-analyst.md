@@ -410,14 +410,34 @@ Use the quality-analyst-agent for <source> --type <value>
 
 ## Step 5 — Deliver the output
 
-**GitHub context available:**
+### 5a — Save the test plan file
+
+Always save the test plan first, regardless of source:
+
 ```bash
-gh issue comment <number> --body "$(cat test-plan.md)"
-gh pr comment <number> --body "$(cat test-plan.md)"
+# Save to docs/test-plans/
+docs/test-plans/<feature-slug>-<type>-test-plan.md
 ```
 
-**No GitHub context:**
-Save to `docs/test-plans/<feature-slug>-<type>-test-plan.md` and print the path.
+Print the saved path before posting.
+
+### 5b — Post as a comment on the source issue or PR
+
+If the source is a GitHub issue number, post the test plan as a comment on that issue:
+
+```bash
+gh issue comment <number> --repo <owner>/<repo> --body "$(cat docs/test-plans/<feature-slug>-<type>-test-plan.md)"
+```
+
+If the source is a GitHub PR number, post on the PR:
+
+```bash
+gh pr comment <number> --repo <owner>/<repo> --body "$(cat docs/test-plans/<feature-slug>-<type>-test-plan.md)"
+```
+
+If no GitHub issue or PR number is provided (plain-text requirement), skip posting and only print the saved file path.
+
+> **Always post on the same issue or PR from which the requirement was sourced.** Do not post on a different issue or PR.
 
 ---
 
