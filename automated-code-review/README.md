@@ -100,4 +100,4 @@ You can re-trigger a review by removing and re-adding the label.
 * Reviews are **comment-only**
 * Merges are **not blocked**
 * Review runs only when the label is added
-* Teams can customize `docs/code-review-guidelines.md`
+* Teams can customize the guidelines in `docs/code-review/` - Claude reads every `.md` file in that directory

@@ -19,7 +19,7 @@ on:
           ## Instructions
 
           1. **Read Project Guidelines First**
-             Check if the directory `${{ inputs.guidelines_dir }}` exists.
+             Check if the directory `{{GUIDELINES_DIR}}` exists.
              If it does, read ALL `.md` files in that directory - these contain the project's specific standards.
              Prioritize these guidelines over generic advice.
 
@@ -30,7 +30,9 @@ on:
              - If you see issues that should be separate PRs, note them briefly at the end
 
           3. **Review Output Format - IMPORTANT**
-             Create ONE single comment with your complete review using this structure:
+             Do NOT post anything to GitHub yourself. This workflow takes your final
+             message and posts it as the PR comment. Make your final message the
+             complete review and nothing else, using this structure:
 
              ## Code Review Summary
 
@@ -46,7 +48,8 @@ on:
              ### What Looks Good
              - Brief positive notes
 
-             Do NOT create multiple inline comments. Put everything in ONE comment.
+             Do NOT create multiple inline comments, and do NOT run `gh pr comment`.
+             Everything belongs in that one final message.
 
           4. **Focus Areas** (priority order)
              - Security vulnerabilities
@@ -129,6 +132,24 @@ jobs:
           sanitized_tools="${sanitized_tools//\`/\\\`}"
           echo "allowed_tools=${sanitized_tools}" >> $GITHUB_OUTPUT
 
+      - name: Build review prompt
+        id: prompt
+        env:
+          RAW_PROMPT: ${{ inputs.prompt }}
+          GUIDELINES_DIR: ${{ inputs.guidelines_dir }}
+        run: |
+          # `inputs.guidelines_dir` cannot be referenced from the default value of
+          # another workflow_call input - GitHub resolves input defaults before the
+          # caller's inputs exist, so it renders empty. The default prompt therefore
+          # carries a literal {{GUIDELINES_DIR}} placeholder that we substitute here.
+          prompt="${RAW_PROMPT//\{\{GUIDELINES_DIR\}\}/${GUIDELINES_DIR}}"
+          delimiter="EOF_PROMPT_$(openssl rand -hex 8)"
+          {
+            echo "text<<${delimiter}"
+            echo "${prompt}"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1.0.8
@@ -139,10 +160,66 @@ jobs:
             actions: read
           
           # Use input parameters or defaults
-          prompt: ${{ inputs.prompt }}
+          prompt: ${{ steps.prompt.outputs.text }}
           use_sticky_comment: ${{ inputs.use_sticky_comment }}
           # track_progress: ${{ inputs.track_progress }}
           # DISABLED: See comment above in inputs section for details
           claude_args: |
             --model ${{ inputs.model || 'claude-sonnet-4-5-20250929' }}
-            --allowed-tools "${{ steps.sanitize.outputs.allowed_tools != '' && steps.sanitize.outputs.allowed_tools || 'Read,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)' }}"
+            --allowed-tools "${{ steps.sanitize.outputs.allowed_tools != '' && steps.sanitize.outputs.allowed_tools || 'Read,Bash(gh pr diff:*),Bash(gh pr view:*)' }}"
+
+      - name: Post review comment
+        # The action runs in "agent" mode on pull_request events, and agent mode
+        # posts nothing to the PR by itself - use_sticky_comment is inert there.
+        # Before this step the review only reached the job summary unless the model
+        # happened to call `gh pr comment` on its own, which it did on 4 of 14 runs.
+        if: ${{ !cancelled() && steps.claude-review.outputs.execution_file != '' }}
+        env:
+          # The action revokes its own app token in its final step, so that token is
+          # already dead here. Post as github-actions[bot] instead.
+          GH_TOKEN: ${{ github.token }}
+          EXECUTION_FILE: ${{ steps.claude-review.outputs.execution_file }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          STICKY: ${{ inputs.use_sticky_comment }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MARKER: '<!-- claude-code-review -->'
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "$EXECUTION_FILE" ]; then
+            echo "::warning::No execution file at ${EXECUTION_FILE}; nothing to post."
+            exit 0
+          fi
+
+          # The execution file is a JSON array of turns. The final turn carries the
+          # model's closing message in .result - that is the review.
+          review=$(jq -r '[.[] | select(.type == "result")] | last | .result // ""' "$EXECUTION_FILE")
+
+          if [ -z "${review//[[:space:]]/}" ]; then
+            echo "::warning::Claude produced no review text; nothing to post."
+            exit 0
+          fi
+
+          body_file=$(mktemp)
+          {
+            printf '%s\n\n' "$MARKER"
+            printf '%s\n' "$review"
+            printf '\n<sub>Automated review by Claude. <a href="%s">View run</a>.</sub>\n' "$RUN_URL"
+          } > "$body_file"
+
+          existing=''
+          if [ "$STICKY" = 'true' ]; then
+            existing=$(gh api --paginate "repos/${REPO}/issues/${PR_NUMBER}/comments" \
+              --jq "[.[] | select(.user.type == \"Bot\") | select((.body // \"\") | contains(\"${MARKER}\"))] | last | .id // empty" || true)
+          fi
+
+          if [ -n "$existing" ]; then
+            jq -n --rawfile body "$body_file" '{body: $body}' \
+              | gh api --method PATCH "repos/${REPO}/issues/comments/${existing}" --input - --silent
+            echo "Updated review comment ${existing}."
+          else
+            jq -n --rawfile body "$body_file" '{body: $body}' \
+              | gh api --method POST "repos/${REPO}/issues/${PR_NUMBER}/comments" --input - --silent
+            echo "Posted review comment on PR #${PR_NUMBER}."
+          fi
