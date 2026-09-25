@@ -19,6 +19,7 @@ Skills are companion wrappers for the agents above. Each skill guarantees its ag
 | [cc-business-analyst](skills/cc-business-analyst/) | `business-analyst` | Shows live progress and guarantees the business-analyst agent is always triggered for requirement refinement. |
 | [cc-implementation-planner](skills/cc-implementation-planner/) | `implementation-planner` | Shows live progress and guarantees the implementation-planner agent is always triggered for technical planning. |
 | [cc-implementation-executor](skills/cc-implementation-executor/) | `implementation-executor` | Shows live progress and guarantees the implementation-executor agent is always triggered for plan execution. |
+| [cc-malware-scan](skills/cc-malware-scan/) | — (runs bundled scripts) | Sweeps every project on your machine for hidden-payload malware. Installed per user, not per project — see its README. |
 
 > **Recommended:** Install both the agent and its companion skill together. The skill ensures the agent is always used correctly.
 
@@ -50,7 +51,7 @@ For each agent in `claude/agents/`:
 
 For each skill in `claude/skills/`:
 
-5. Copy the entire skill directory to `.claude/skills/<skill-name>/` in this project (skills have no placeholders — copy as-is).
+5. Copy the entire skill directory to `.claude/skills/<skill-name>/` in this project (skills have no placeholders — copy as-is). Skip `cc-malware-scan`: it is installed per user in `~/.claude/skills/`, not per project.
 
 Then:
 
