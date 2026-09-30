@@ -30,7 +30,9 @@ on:
              - If you see issues that should be separate PRs, note them briefly at the end
 
           3. **Review Output Format - IMPORTANT**
-             Create ONE single comment with your complete review using this structure:
+             Provide your complete review as your FINAL message using this structure.
+             Do NOT post a PR comment yourself and do NOT create inline comments — the
+             workflow publishes your final message to the PR automatically as one comment.
 
              ## Code Review Summary
 
@@ -45,8 +47,6 @@ on:
 
              ### What Looks Good
              - Brief positive notes
-
-             Do NOT create multiple inline comments. Put everything in ONE comment.
 
           4. **Focus Areas** (priority order)
              - Security vulnerabilities
@@ -145,4 +145,48 @@ jobs:
           # DISABLED: See comment above in inputs section for details
           claude_args: |
             --model ${{ inputs.model || 'claude-sonnet-4-5-20250929' }}
-            --allowed-tools "${{ steps.sanitize.outputs.allowed_tools != '' && steps.sanitize.outputs.allowed_tools || 'Read,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)' }}"
+            --allowed-tools "${{ steps.sanitize.outputs.allowed_tools != '' && steps.sanitize.outputs.allowed_tools || 'Read,Bash(gh pr diff:*),Bash(gh pr view:*)' }}"
+
+      # Post the review deterministically. In agent mode the action does NOT manage a
+      # PR comment, so previously whether a comment appeared depended on Claude choosing
+      # to run `gh pr comment` itself — non-deterministic, and some runs only wrote the
+      # review to the Actions step summary. This step always publishes Claude's final
+      # message as a single PR comment (sticky: updates the same comment on re-runs).
+      - name: Post review comment
+        if: ${{ always() && steps.claude-review.outputs.execution_file != '' && github.event.pull_request.number }}
+        env:
+          GH_TOKEN: ${{ steps.claude-review.outputs.github_token || github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          EXECUTION_FILE: ${{ steps.claude-review.outputs.execution_file }}
+          STICKY: ${{ inputs.use_sticky_comment }}
+          MARKER: '<!-- claude-code-review -->'
+        run: |
+          set -euo pipefail
+
+          # Extract Claude's final message from the execution log. The file is
+          # stream-json (JSONL); slurp + flatten also tolerates a JSON-array form.
+          review="$(jq -rs 'flatten | map(select(type == "object" and .type == "result")) | last | .result // empty' "$EXECUTION_FILE")"
+
+          if [ -z "$review" ] || [ "$review" = "null" ]; then
+            echo "No review text found in execution output; nothing to post."
+            exit 0
+          fi
+
+          body_file="$(mktemp)"
+          printf '%s\n\n%s\n' "$MARKER" "$review" > "$body_file"
+
+          # Sticky: reuse the existing review comment if one exists.
+          existing_id=""
+          if [ "$STICKY" = "true" ]; then
+            existing_id="$(gh api --paginate "repos/$REPO/issues/$PR/comments" \
+              --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | tail -n1)"
+          fi
+
+          if [ -n "$existing_id" ]; then
+            echo "Updating existing review comment $existing_id"
+            gh api -X PATCH "repos/$REPO/issues/comments/$existing_id" -F body=@"$body_file" >/dev/null
+          else
+            echo "Creating new review comment"
+            gh pr comment "$PR" --repo "$REPO" --body-file "$body_file"
+          fi
